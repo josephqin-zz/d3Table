@@ -1,8 +1,22 @@
 <html>
 	<head>
 		<script src="d3/d3.min.js"></script>
-		<script src="src/tableView.js"></script>
-		<script src="src/pageTab.js"></script>
+		<script src="src/tableModule.js"></script>
+		<style type="text/css">
+		#tableCanvas {
+		    height: 100%;
+		    width: 80%;
+		    border:2px solid #000;
+		    overflow: scroll;
+		   
+		}
+
+		svg {
+		    display: block;
+		    width: 300%;
+		    height: 300%;
+		}
+		</style>
 	</head>
 	<body>
 		<div id='tableCanvas'>
@@ -11,21 +25,14 @@
 	</body>
 	<script>
 	    var rows = [];
-	    for(i=0;i<3347;i++){rows.push(i)}
+	    for(i=0;i<33470;i++){rows.push(i)}
 		var	tableData
-			=rows.map((d)=>{ return {id:d,name:'sample'+d,value:d*100+50}})
+			=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
 
-	    svg = d3.select('#tableCanvas').append('svg').attr('width','1000').attr('height','700')
-
-	    tab = svg.append('g').attr('id','tabs')
-	    tableView = svg.append('g').attr('id','tableView').attr('transform','translate(0,25)')
-        newdata = tableData.filter((d)=>d.value%3===0)
-
-	    tableFun = d3.tableView.tableData(newdata).columnList(['name','value'])
-	    tabFun = d3.pageTab.rowTotal(newdata.length).row(20).page(10).pageclickFun((range)=>{
-	    	tableView.call(tableFun.rowFilter((r,i)=>range.includes(i)))
-	    })
-	    tab.call(tabFun);
+	    svg = d3.select('#tableCanvas').append('svg')
+	    svg.call(d3.tableModule.tableData(tableData).columnList(['name','id','value','name','id','value','name','id','value','name','id','value','name','id','value','name','id','value']))
+	    
+	    
 
  		
 	</script>
