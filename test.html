@@ -2,6 +2,7 @@
 	<head>
 		<script src="d3/d3.min.js"></script>
 		<script src="src/tableModule.js"></script>
+		<script src="src/groupEditor.js"></script>
 		<style type="text/css">
 		#tableCanvas {
 		    height: 100%;
@@ -19,18 +20,62 @@
 		</style>
 	</head>
 	<body>
+	   
 		<div id='tableCanvas'>
 
 		</div>	
 	</body>
 	<script>
+	    var dragBehavior = d3.drag()
+							    .on("start", dragstarted)
+							    .on("drag", dragged)
+							    .on("end", dragended);
 	    var rows = [];
-	    for(i=0;i<33470;i++){rows.push(i)}
+	    for(i=0;i<333470;i++){rows.push(i)}
 		var	tableData
 			=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
 
 	    svg = d3.select('#tableCanvas').append('svg')
-	    svg.call(d3.tableModule.tableData(tableData).columnList(['name','id','value','name','id','value','name','id','value','name','id','value','name','id','value','name','id','value']))
+	    groupView = svg.append('g').attr('id','groupEidtor')
+
+	    			   .call(dragBehavior)
+	    			   .call(d3.groupEditor);
+
+	    			   
+	    tableView = svg.append('g').attr('id','tableView')
+	    			   .call(d3.tableModule.tableData(tableData).columnList(['name','id','value','id']))
+	    			   .attr('transform','translate(0,40)');
+	    tableView
+	    			   .call(function(svg){
+	    			   	let bbox = svg.node().getBBox()
+	    			   	svg.insert('rect',":first-child")
+	    			   		.attr('width',bbox.width)
+	    			   		.attr('height',bbox.height)
+	    			   		.style('stroke','#000000')
+	    			   		.style('fill','#ffffff')
+
+	    			   })
+	    			   .call(dragBehavior);
+
+	    			   function dragstarted(d) {
+						  
+						}
+
+					   function dragged(d) {
+							this.x = this.x || 0;
+							this.y = this.y || 0;
+						  
+							this.x += d3.event.dx;
+							this.y += d3.event.dy;
+											  d3.select(this)
+											    .attr("transform", 'translate('+this.x+' , '+this.y+")")
+											    
+											}
+
+						function dragended(d) {
+						  
+						}
+
 	    
 	    
 

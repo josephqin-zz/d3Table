@@ -41,23 +41,30 @@ d3.pageTab=(function(){
                         .enter()
                         .append('g')
                         .attr('transform',(g,i)=>'translate('+buttonWidth*i+', 0)')
+                        .style('cursor',"pointer")
+                        .style('fill','#ffffff');
         button.append('rect')
               .attr('width',buttonWidth)
               .attr('height',buttonHeight)
-              .style('fill','#ffffff')
+            
               .style('stroke','#000000')
-              .filter((d)=>d.page===newTabs[0].page)
+        button.filter((d)=>d.page===newTabs[0].page)
               .style('fill','#e0e2e5');
 
         pageClickEvent(newTabs[0].range);
 
-        button.on('click',(g)=>{
-                let rect = button.selectAll('rect').style('fill','#ffffff')
+        button.on('mouseover',function(g){
+                 d3.select(this).select('rect').style('fill','#a4c5fc');
+              }).on('mouseout',function(g){
+
+                  d3.select(this).select('rect').style('fill',null);
+              }).on('click',(g)=>{
+                button.style('fill','#ffffff')
                 if(typeof g.range === 'number'){
                     dispatcher.call('updateTab',this,g.range);
                     
                 }else{
-                    rect.filter((d)=>d.page===g.page).style('fill','#e0e2e5')
+                    button.filter((d)=>d.page===g.page).style('fill','#e0e2e5')
                     pageClickEvent(g.range);
                 }
               });
