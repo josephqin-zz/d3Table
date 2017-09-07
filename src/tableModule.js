@@ -90,7 +90,7 @@ d3.pageTab=(function(){
     //Getters and Setters
     exports.rowTotal=function(_x){
         if(!arguments.length) return rowInAll;
-        rowInAll = _x;
+        if(_x>0) rowInAll = _x;
         return this;
     };
 
@@ -182,7 +182,7 @@ d3.tableView = (function(){
 	exports.tableData = function(data){
 		if(!arguments.length) return rawTableData;
 	  	rawTableData = data ;
-        columns = Object.keys(data[0]);
+        
 	    return this;
 	};
 
