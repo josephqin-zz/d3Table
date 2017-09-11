@@ -1,8 +1,10 @@
 <html>
 	<head>
 		<script src="d3/d3.min.js"></script>
+		<!-- <script src="src/tableView.js"></script>
+		<script src="src/cohortPanel.js"></script> -->
 		<script src="src/tableModule.js"></script>
-		<script src="src/groupEditor.js"></script>
+		<!-- * -->
 		<style type="text/css">
 		#tableCanvas {
 		    height: 100%;
@@ -22,28 +24,28 @@
 	<body>
 	   
 		<div id='tableCanvas'>
-
+		   <svg id="UI"></svg>
 		</div>	
 	</body>
 	<script>
-	    var dragBehavior = d3.drag()
-							    .on("start", dragstarted)
-							    .on("drag", dragged)
-							    .on("end", dragended);
+	    // var dragBehavior = d3.drag()
+					// 		    .on("start", dragstarted)
+					// 		    .on("drag", dragged)
+					// 		    .on("end", dragended);
 	    var rows = [];
-	    for(i=0;i<333470;i++){rows.push(i)}
+	    for(i=0;i<100;i++){rows.push(i)}
 		var	tableData
 			=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
 
-	    svg = d3.select('#tableCanvas').append('svg')
-	    groupView = svg.append('g').attr('id','groupEidtor')
+	    svg = d3.select('#UI')
+	    // groupView = svg.append('g').attr('id','groupEidtor')
 
-	    			   .call(dragBehavior)
-	    			   .call(d3.groupEditor);
+	    // 			   .call(dragBehavior)
+	    // 			   .call(d3.groupEditor);
 
 	    			   
 	    tableView = svg.append('g').attr('id','tableView')
-	    			   .call(d3.tableModule.tableData(tableData).columnList(['name','id','value','id']))
+	    			   .call(d3.tableModule.tableData(tableData).columnList(['name','id','value','id']).rowColor({23:'red',45:'yellow'}))
 	    			   .attr('transform','translate(0,40)');
 	    tableView
 	    			   .call(function(svg){
@@ -55,7 +57,7 @@
 	    			   		.style('fill','#ffffff')
 
 	    			   })
-	    			   .call(dragBehavior);
+	    			   // .call(dragBehavior);
 
 	    			   function dragstarted(d) {
 						  

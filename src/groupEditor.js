@@ -1,37 +1,3 @@
-//groupEditorInput Module
-//
-d3.groupEditorInput = (function(){
-   var cellWidth = 225,
-       cellHeight = 25,
-       inputValue = null,
-       
-
-function exports(_selection){
-   let inputs = _selection.append('g')
-                          .attr('id','inputBox')
-                          .append('foreignObject')
-                          .attr("width", cellWidth-cellHeight)
-                          .attr("height", cellHeight)
-                          .append('xhtml:input');
-   let button =  _selection.append('g')
-                           .attr('id','confirmButton')
-                           .on('click',(d)=>{
-                               inputValue=inputs.node().value
-                           })
-//Getter and Setter              
-              
-    
-}
-//
-
-return exports;
-})()
-
-
-
-
-
-
 d3.groupEditor = (function(){
   
   var metaData = {

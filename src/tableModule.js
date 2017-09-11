@@ -199,6 +199,12 @@ d3.tableView = (function(){
 
 	};
 
+    exports.rowColor = function(colorMap){
+        if(!arguments.length) return rowColor;
+        rowColor = (i) => colorMap[i]?colorMap[i]:((i)=>{return i%2?"ffffff":'#e0e2e5'})(i);
+        return this;
+    };
+
 	return exports;
 
 })();
@@ -207,7 +213,8 @@ d3.tableView = (function(){
 //encapsulate above module
 d3.tableModule = (function(){
     var tabFun = d3.pageTab,
-        tableFun = d3.tableView;
+        tableFun = d3.tableView,
+        colorMap = {};
 
     
     function exports(_selection){
@@ -217,7 +224,9 @@ d3.tableModule = (function(){
         let tableView = _selection.append('g').attr('id','tableView').attr('transform','translate(0,25)')
         
         tabFun = tabFun.pageclickFun((range)=>{
-            tableView.call(tableFun.rowFilter((r,i)=>range.includes(i)))
+            let newColorMap = Object.keys(colorMap).filter((r)=>range.includes(+r)).reduce((acc,d)=>{acc[d%tabFun.row()]=colorMap[d]; return acc},{})
+            
+            tableView.call(tableFun.rowFilter((r,i)=>range.includes(i)).rowColor(newColorMap))
         });
         tabNavigator.call(tabFun);
     };
@@ -233,6 +242,12 @@ d3.tableModule = (function(){
     exports.columnList = function(cols){
         if(!arguments.length) return tableFun.columnList();
         tableFun = tableFun.columnList(cols);
+        return this;
+    }
+
+    exports.rowColor = function(colorMaps){
+        if(!arguments.length) return colorMap;
+        colorMap = colorMaps;
         return this;
     }
 
