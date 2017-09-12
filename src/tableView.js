@@ -67,9 +67,10 @@ d3.tableView = (function(){
 
     };
     //module event behavior
-    var dispatcher = d3.dispatch('selectRow')
-    dispatcher.on('selectRow',function(i,type){console.log('row'+i+' is selected and this is '+type+' selection')}) 
- 
+    var clickEventFn = function(d,i){console.log('single click')} 
+    var dblclickEventFn = function(d,i){console.log('double click')}
+    var dragEventFn = d3.drag(); 
+
 	function exports(_selection){
 		if(!rawTableData)return this;
 		//render table row0 is table head
@@ -83,24 +84,12 @@ d3.tableView = (function(){
 				  .append('g')
 				  .attr('id',(r,i)=>'row'+i)
 				  .each(rowRender)
-                  .on('click',function(r,i){
-                    d3.event.preventDefault();
-                    let selectType = 'single'
-                    if( d3.event.shiftKey ){
-
-                        selectType = 'group'
-                    }
-                    if( d3.event.ctrlKey ){
-                        selectType = 'multiple'
-                    } 
-                    if(i>0)dispatcher.call('selectRow',this,i,selectType);
-                  });
-		
-
-	};
+                  .on('click',clickEventFn)
+                  .call(dragEventFn);
+   	};
 
 	//Getters and Setters
-	exports.tableData = function(data){
+	exports.bindData = function(data){
 		if(!arguments.length) return rawTableData;
 	  	rawTableData = data ;
         if(data.length>0) columns=Object.keys(data[0])
@@ -126,8 +115,21 @@ d3.tableView = (function(){
         return this;
     }
 
-    exports.selectRowFn = function(fn){
-        dispatcher.on('selectRow',fn);
+    exports.clickEvent = function(fn){
+        if(!arguments.length) return clickEventFn;
+        clickEventFn = fn
+        return this;
+    }
+
+    exports.dblclickEvent = function(fn){
+        if(!arguments.length) return dblclickEventFn;
+        dblclickEventFn = fn;
+        return this;
+    }
+
+    exports.dragEvent = function(fn){
+        if(!arguments.length) return dragEventFn;
+        dragEventFn = fn;
         return this;
     }
 

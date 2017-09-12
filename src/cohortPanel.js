@@ -84,11 +84,31 @@ d3.cohortPanel = (function(){
    	    var inputPanel = _selection.append('g').attr('id','inputPanel');
    	    var groupPanel = _selection.append('g').attr('id','groupPanel');
    	    var tablePanel = _selection.append('g').attr('id','tablePanel');
-        
-        var tableFn = d3.tableView.tableData(tabledata).selectRowFn(function(rId,type){dispatcher.call('selectRow',this,rId,type)})
+   	    //event FN
+   	    //select Row
+   	    var selectFn = function(value,i){
+   	    	 	    	
+                    let selectType = 'single'
+                    if( d3.event.shiftKey ){
 
+                        selectType = 'group'
+                    }
+                    if( d3.event.ctrlKey ){
+                        selectType = 'multiple'
+                    } 
+                    if(i>0)dispatcher.call('selectRow',this,i,selectType);
+   	    }
+        //add element to group
+        var addElmFn = function(value){dispatcher.call('addElm',this,value.key)}
+        //remove group
+        var rmGroupFn = function(value){dispatcher.call('rmGroup',this,value.key)}
+        //remove element from group
+        var rmElmFn = function(value,i){dispatcher.call('rmElm',this,i)}
+
+        var tableFn = d3.tableView.bindData(tabledata).clickEvent(selectFn).dblclickEvent(rmElmFn)
+        var groupFn = d3.groupPanel.clickEvent(addElmFn).dblclickEvent(rmGroupFn)
    	    inputPanel.call(d3.inputPanel.getInputFn(function(value){dispatcher.call('addGroup',this,value)}));	
-		groupPanel.call(d3.groupPanel)
+		groupPanel.call(groupFn)
 		          .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5)+')');
    	    tablePanel.call(tableFn)
    	    		  .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5+groupPanel.node().getBBox().height+5)+')');
@@ -109,8 +129,24 @@ d3.cohortPanel = (function(){
 
    	        dispatcher.call('updateUI',null,groupdata);
    	    })
+
+   	    dispatcher.on('addElm',function(groupName,elms=null){
+		
+			addElm.bind(groupdata)(groupName,elms);
+		
+			dispatcher.call('updateUI',null,groupdata);
+		})
+
+		dispatcher.on('rmElm',function(elms=null){
+		
+			addElm.bind(groupdata)(null,elms);//add elms to null group equalite to delete elms
+			
+			dispatcher.call('updateUI',null,groupdata);
+
+		})
+
    	    dispatcher.on('updateUI',function(groupdata){
-   	    	groupPanel.call(d3.groupPanel.bindData(groupdata))
+   	    	groupPanel.call(groupFn.bindData(groupdata))
             
             //style rows according to selected Rows and group information
    	    	let rowscolor = d3.entries(groupdata.relationship).reduce((acc,r)=>{
@@ -120,8 +156,9 @@ d3.cohortPanel = (function(){
    	    	},{})
    	    	let selectedrow = groupdata.selectedRow.reduce((acc,r)=>{acc[r]='#e5d822';return acc},{})
             let colorMap = {...rowscolor,...selectedrow}
+            let dragFn = d3.drag().filter((d,i)=>groupdata.selectedRow.includes(i));
 
-   	    	tablePanel.call(tableFn.rowColor(colorMap))
+   	    	tablePanel.call(tableFn.rowColor(colorMap).dragEvent(dragFn))
    	    		  .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5+groupPanel.node().getBBox().height+5)+')');
    	    })
 	    

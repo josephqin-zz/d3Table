@@ -33,12 +33,73 @@ d3.groupPanel=(function(){
     b = (255 - b).toString(16);
     // pad each with zeros and return
     return "#" + padZero(r) + padZero(g) + padZero(b);
-	}  	    	
+	}
+
+    //distinguish click && doubleclick
+		function clickcancel() {
+		 
+		  var dispatcher = d3.dispatch('click', 'dblclick');
+		  function cc(selection) {
+		      var down, tolerance = 5, last, wait = null, args;
+		      // euclidean distance
+		      function dist(a, b) {
+		          return Math.sqrt(Math.pow(a[0] - b[0], 2), Math.pow(a[1] - b[1], 2));
+		      }
+		      selection.on('mousedown', function() {
+		          down = d3.mouse(document.body);
+		          last = +new Date();
+		          args = arguments;
+		      });
+		      selection.on('mouseup', function() {
+		          if (dist(down, d3.mouse(document.body)) > tolerance) {
+		              return;
+		          } else {
+		              if (wait) {
+		                  window.clearTimeout(wait);
+		                  wait = null;
+		                  dispatcher.apply("dblclick", this, args);
+		              } else {
+		                  wait = window.setTimeout((function() {
+		                      return function() {
+		                          dispatcher.apply("click", this, args);
+		                          wait = null;
+		                      };
+		                  })(), 300);
+		              }
+		          }
+		      });
+		  };
+		  // Copies a variable number of methods from source to target.
+		  var d3rebind = function(target, source) {
+		    var i = 1, n = arguments.length, method;
+		    while (++i < n) target[method = arguments[i]] = d3_rebind(target, source, source[method]);
+		    return target;
+		  };
+
+		  // Method is assumed to be a standard D3 getter-setter:
+		  // If passed with no arguments, gets the value.
+		  // If passed with arguments, sets the value and returns the target.
+		  function d3_rebind(target, source, method) {
+		    return function() {
+		      var value = method.apply(source, arguments);
+		      return value === source ? target : value;
+		    };
+		  }
+		  return d3rebind(cc, dispatcher, 'on');
+		}
+
+
+	//module behavior
+	var clickEventFn = function(d,i){console.log('single click')} 
+    var dblclickEventFn = function(d,i){console.log('double click')}	    	
 
 	function exports(_selection){
-
 		_selection.selectAll('*').remove()
-		_selection.selectAll('g')
+		var cc = clickcancel();
+		cc.on('click',clickEventFn);
+		cc.on('dblclick',dblclickEventFn);
+		
+		let group = _selection.selectAll('g')
 				  .data(d3.entries(groupData.relationship))
 				  .enter()
 				  .append('g')
@@ -60,6 +121,8 @@ d3.groupPanel=(function(){
 		    				       .style('dominant-baseline','middle')
 		    				       .style('text-anchor','middle')
 				  })
+				  .call(cc);
+				 
 
 	}
     
@@ -67,6 +130,16 @@ d3.groupPanel=(function(){
     	if(!arguments.length) return groupData;
     	groupData = {...data};
     	return this;
+    }
+    exports.clickEvent = function(fn){
+    	if(!arguments.length) return clickEventFn;
+    	clickEventFn=fn;
+    	return this;
+    }
+    exports.dblclickEvent = function(fn){
+        if(!arguments.length) return dblclickEventFn;
+        dblclickEventFn = fn
+        return this;
     }
 	return exports;
 })()
