@@ -1,9 +1,11 @@
 <html>
 	<head>
 		<script src="d3/d3.min.js"></script>
-		<!-- <script src="src/tableView.js"></script>
-		<script src="src/cohortPanel.js"></script> -->
-		<script src="src/tableModule.js"></script>
+		<script src="src/tableView.js"></script>
+		<script src="src/cohortPanel.js"></script>
+		<script src="src/inputPanel.js"></script>
+		<script src="src/groupPanel.js"></script>
+		<!-- <script src="src/tableModule.js"></script> -->
 		<!-- * -->
 		<style type="text/css">
 		#tableCanvas {
@@ -16,7 +18,7 @@
 
 		svg {
 		    display: block;
-		    width: 300%;
+		    width: 500%;
 		    height: 300%;
 		}
 		</style>
@@ -28,55 +30,68 @@
 		</div>	
 	</body>
 	<script>
-	    // var dragBehavior = d3.drag()
-					// 		    .on("start", dragstarted)
-					// 		    .on("drag", dragged)
-					// 		    .on("end", dragended);
-	    var rows = [];
-	    for(i=0;i<100;i++){rows.push(i)}
-		var	tableData
-			=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
+    var svg = d3.select('#UI');
+    var rows = [];
+	for(i=0;i<100;i++){rows.push(i)}
+    var	tableData=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
 
-	    svg = d3.select('#UI')
-	    // groupView = svg.append('g').attr('id','groupEidtor')
+	 //    d3.json('test.txt',function(data){
 
-	    // 			   .call(dragBehavior)
-	    // 			   .call(d3.groupEditor);
+  //       tableData = data.values;
+  //       // columns = Object.keys(data.values.filter((d)=>Object.keys(d).includes('area'))[0]);
+  //       columns = tableData.map((d)=>Object.keys(d))
+	 //    svg = d3.select('#UI')
+	 //    // groupView = svg.append('g').attr('id','groupEidtor')
+
+	 //    // 			   .call(dragBehavior)
+	 //    // 			   .call(d3.groupEditor);
 
 	    			   
-	    tableView = svg.append('g').attr('id','tableView')
-	    			   .call(d3.tableModule.tableData(tableData).columnList(['name','id','value','id']).rowColor({23:'red',45:'yellow'}))
-	    			   .attr('transform','translate(0,40)');
-	    tableView
-	    			   .call(function(svg){
-	    			   	let bbox = svg.node().getBBox()
-	    			   	svg.insert('rect',":first-child")
-	    			   		.attr('width',bbox.width)
-	    			   		.attr('height',bbox.height)
-	    			   		.style('stroke','#000000')
-	    			   		.style('fill','#ffffff')
+	 //    tableView = svg.append('g').attr('id','tableView')
+	 //    			   .call(d3.tableModule.tableData(tableData).columnList(columns).rowColor({23:'red',45:'yellow'}))
+	 //    			   .attr('transform','translate(0,40)');
+	 //    tableView
+	 //    			   .call(function(svg){
+	 //    			   	let bbox = svg.node().getBBox()
+	 //    			   	svg.insert('rect',":first-child")
+	 //    			   		.attr('width',bbox.width)
+	 //    			   		.attr('height',bbox.height)
+	 //    			   		.style('stroke','#000000')
+	 //    			   		.style('fill','#ffffff')
 
-	    			   })
-	    			   // .call(dragBehavior);
+	 //    			   })
 
-	    			   function dragstarted(d) {
+	 //    })
+	 //    // var dragBehavior = d3.drag()
+		// 			// 		    .on("start", dragstarted)
+		// 			// 		    .on("drag", dragged)
+		// 			// 		    .on("end", dragended);
+	 // //    var rows = [];
+	 // //    for(i=0;i<100;i++){rows.push(i)}
+		// // var	tableData
+		// // 	=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
+
+	    
+	 //    			   // .call(dragBehavior);
+
+	 //    			   function dragstarted(d) {
 						  
-						}
+		// 				}
 
-					   function dragged(d) {
-							this.x = this.x || 0;
-							this.y = this.y || 0;
+		// 			   function dragged(d) {
+		// 					this.x = this.x || 0;
+		// 					this.y = this.y || 0;
 						  
-							this.x += d3.event.dx;
-							this.y += d3.event.dy;
-											  d3.select(this)
-											    .attr("transform", 'translate('+this.x+' , '+this.y+")")
+		// 					this.x += d3.event.dx;
+		// 					this.y += d3.event.dy;
+		// 									  d3.select(this)
+		// 									    .attr("transform", 'translate('+this.x+' , '+this.y+")")
 											    
-											}
+		// 									}
 
-						function dragended(d) {
+		// 				function dragended(d) {
 						  
-						}
+		// 				}
 
 	    
 	    

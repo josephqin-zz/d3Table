@@ -12,8 +12,37 @@ d3.tableView = (function(){
 
     var rowColor = (i)=>{return i%2?"ffffff":'#e0e2e5'}
 
+    function invertColor(hex, bw) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+        g = parseInt(hex.slice(2, 4), 16),
+        b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+        // http://stackoverflow.com/a/3943023/112731
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+            ? '#000000'
+            : '#FFFFFF';
+    }
+    // invert color components
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+    // pad each with zeros and return
+    return "#" + padZero(r) + padZero(g) + padZero(b);
+    }
+
     var rowRender = function(rowData,rowId){
-    	d3.select(this).style('fill',rowColor(rowId))
+        let rcolor = rowColor(rowId)
+    	d3.select(this).style('fill',rcolor)
     				   .attr('transform','translate( 0 '+","+cellHeight*rowId+" )");
     	d3.select(this).selectAll('g')
     				   .data(rowData)
@@ -27,7 +56,7 @@ d3.tableView = (function(){
     				   				   .attr('height',cellHeight)
     				    d3.select(this).append('text')
     				    			   .text((d)=>d)
-    				    			   .style('fill','#000000')	
+    				    			   .style('fill',invertColor(rcolor,true))	
     				    			   .attr('x',cellWidth/2)
     				    			   .attr('y',cellHeight/2)
     				    			   .style('dominant-baseline','middle')
@@ -36,7 +65,10 @@ d3.tableView = (function(){
 
     				   })
 
-    }; 
+    };
+    //module event behavior
+    var dispatcher = d3.dispatch('selectRow')
+    dispatcher.on('selectRow',function(i,type){console.log('row'+i+' is selected and this is '+type+' selection')}) 
  
 	function exports(_selection){
 		if(!rawTableData)return this;
@@ -50,7 +82,19 @@ d3.tableView = (function(){
 				  .enter()
 				  .append('g')
 				  .attr('id',(r,i)=>'row'+i)
-				  .each(rowRender);
+				  .each(rowRender)
+                  .on('click',function(r,i){
+                    d3.event.preventDefault();
+                    let selectType = 'single'
+                    if( d3.event.shiftKey ){
+
+                        selectType = 'group'
+                    }
+                    if( d3.event.ctrlKey ){
+                        selectType = 'multiple'
+                    } 
+                    if(i>0)dispatcher.call('selectRow',this,i,selectType);
+                  });
 		
 
 	};
@@ -79,6 +123,11 @@ d3.tableView = (function(){
     exports.rowColor = function(colorMap){
         if(!arguments.length) return rowColor;
         rowColor = (i) => colorMap[i]?colorMap[i]:((i)=>{return i%2?"ffffff":'#e0e2e5'})(i);
+        return this;
+    }
+
+    exports.selectRowFn = function(fn){
+        dispatcher.on('selectRow',fn);
         return this;
     }
 

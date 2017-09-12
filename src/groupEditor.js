@@ -1,4 +1,4 @@
-d3.groupEditor = (function(){
+yd3.groupEditor = (function(){
   
   var metaData = {
   	   groupList:{},
