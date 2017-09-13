@@ -82,8 +82,8 @@ d3.cohortPanel = (function(){
    	    var dispatcher = d3.dispatch('addGroup','rmGroup','addElm','rmElm','updateUI','selectRow')
    	    //UI initial
    	    var inputPanel = _selection.append('g').attr('id','inputPanel');
-   	    var groupPanel = _selection.append('g').attr('id','groupPanel');
    	    var tablePanel = _selection.append('g').attr('id','tablePanel');
+   	    var groupPanel = _selection.append('g').attr('id','groupPanel');
    	    //event FN
    	    //select Row
    	    var selectFn = function(value,i){
@@ -111,7 +111,7 @@ d3.cohortPanel = (function(){
 		groupPanel.call(groupFn)
 		          .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5)+')');
    	    tablePanel.call(tableFn)
-   	    		  .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5+groupPanel.node().getBBox().height+5)+')');
+   	    		  .attr('transform',d3.zoomIdentity.translate(205,0));
    	    
 
         //all dispatch workflow setting
@@ -146,7 +146,7 @@ d3.cohortPanel = (function(){
 		})
 
    	    dispatcher.on('updateUI',function(groupdata){
-   	    	groupPanel.call(groupFn.bindData(groupdata))
+   	    	
             
             //style rows according to selected Rows and group information
    	    	let rowscolor = d3.entries(groupdata.relationship).reduce((acc,r)=>{
@@ -156,10 +156,28 @@ d3.cohortPanel = (function(){
    	    	},{})
    	    	let selectedrow = groupdata.selectedRow.reduce((acc,r)=>{acc[r]='#e5d822';return acc},{})
             let colorMap = {...rowscolor,...selectedrow}
-            let dragFn = d3.drag().filter((d,i)=>groupdata.selectedRow.includes(i));
+            //creat drag event for tableView
+            let dragstart = function(){
+    				let dview = d3.select(this)
+    								.append('g')
+    								.attr('id','dragview')
+    								.style('opacity',0.5)
+    								.attr('transform',d3.zoomIdentity.translate(0,0));
+    				d3.select(this).selectAll('[id^=row]')
+    								.filter((d,i)=>groupdata.selectedRow.includes(i))
+    								.each(function(d){dview.insert(()=>this.cloneNode(true))})
+    		};
+    		let dragged = function(){ 
+    				let dview = d3.select(this).select('#dragview');
+                    let current = dview.node().transform.baseVal[0].matrix;
+                    dview.attr('transform',d3.zoomIdentity.translate(current.e+d3.event.dx,current.f+d3.event.dy))
+                };	
+            let dragend = function(){d3.select(this).select('#dragview').remove()};    	
+            let dragFn = d3.drag().on('start',dragstart).on('drag',dragged).on('end',dragend);
 
-   	    	tablePanel.call(tableFn.rowColor(colorMap).dragEvent(dragFn))
-   	    		  .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5+groupPanel.node().getBBox().height+5)+')');
+   	    	
+   	    	tablePanel.call(tableFn.rowColor(colorMap).dragEvent(dragFn)).attr('transform',d3.zoomIdentity.translate(205,0));
+   	    		groupPanel.call(groupFn.bindData(groupdata))
    	    })
 	    
 		
