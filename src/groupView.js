@@ -1,4 +1,4 @@
-d3.groupPanel=(function(){
+d3.groupView=(function(){
 	var groupData = {
 		       groupList:{},
 		       selectedRow:[],

@@ -11,7 +11,7 @@ d3.tableView = (function(){
     var filterFun = (d,i)=>true;	
 
     var rowColor = (i)=>{return i%2?"ffffff":'#e0e2e5'}
-
+    //get contrast color of give color;
     function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
