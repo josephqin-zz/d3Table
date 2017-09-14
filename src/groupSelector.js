@@ -67,7 +67,7 @@ d3.groupSelector = (function(){
     //select behavior single/multiple/group
     var selectRow = function(rowViewID,type){
     	let rows = [];
-      let rID = this.rowsViewID[rowViewID];
+      let rID = this.rowsViewID[rowViewID-1];
     	if(type==='single'){
     		rows.push(rID);
     	}else if(type==='multiple'){
@@ -120,9 +120,9 @@ d3.groupSelector = (function(){
 
         var tableFn = d3.tableView.bindData(tabledata).columns(tableColumns).clickEvent(selectFn).rowFilter((d,i)=>groupdata.rowsViewID.includes(i));
         var groupFn = d3.groupView.clickEvent(addElmFn).dblclickEvent(rmGroupFn)
-   	    inputPanel.call(d3.inputPanel.getInputFn(function(value){dispatcher.call('addGroup',this,value)}));	
+   	    inputPanel.call(d3.inputPanel.getInputFn(function(value){dispatcher.call('addGroup',this,value)})).attr('transform',d3.zoomIdentity.translate(5,5));	
 		    groupView.call(groupFn)
-		          .attr('transform',(d,i)=>'translate( 0,'+(inputPanel.node().getBBox().height+5)+')');
+		          .attr('transform',(d,i)=>'translate(0,'+(inputPanel.node().getBBox().height+5)+')');
    	    tablePanel.call(tableFn)
    	    		  .attr('transform',d3.zoomIdentity.translate(205,0));
    	    
@@ -165,14 +165,14 @@ d3.groupSelector = (function(){
    	    	  let rowscolor = d3.entries(groupdata.relationship).reduce((acc,r)=>{
                 let rcolor = groupdata.groupList[r.key].color
                 let rmap = r.value.reduce((rs,rid)=>{
-                  let rviewID = groupdata.rowsViewID.findIndex((d)=>d===rid)
+                  let rviewID = groupdata.rowsViewID.findIndex((d)=>d===rid)+1
                   if(rviewID>0) rs[rviewID]= rcolor; 
                   return rs;
                 },{})
                 return {...acc,...rmap}
    	    	  },{})
    	    	  let selectedrow = groupdata.selectedRow.reduce((acc,r)=>{
-              let rviewID = groupdata.rowsViewID.findIndex((d)=>d===r);
+              let rviewID = groupdata.rowsViewID.findIndex((d)=>d===r)+1;
               if(rviewID>0) acc[rviewID]='#e5d822';
               return acc;
             },{})
@@ -181,7 +181,7 @@ d3.groupSelector = (function(){
             let groups=Object.keys(groupdata.groupList)
 
             //creat drag event for tableView
-            let selectedRowViewID = groupdata.selectedRow.map((r)=>groupdata.rowsViewID.indexOf(r)).filter((d)=>d>0) 
+            let selectedRowViewID = groupdata.selectedRow.map((r)=>groupdata.rowsViewID.indexOf(r)+1).filter((d)=>d>0) 
             let dragstart = function(){
     				let dview = d3.select(this.parentNode)
     								.append('g')
