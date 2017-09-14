@@ -85,7 +85,7 @@ d3.tableView = (function(){
 				  .attr('id',(r,i)=>'row'+i)
 				  .each(rowRender)
                   .on('click',clickEventFn)
-        _selection.call(dragEventFn);
+        		  .call(dragEventFn);
    	};
 
 	//Getters and Setters
