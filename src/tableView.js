@@ -4,7 +4,7 @@ d3.tableView = (function(){
     //Default values:
     'use strict';
     var rawTableData = null,
-    	columns = null,
+    	columns = new Array,
     	cellWidth = 150,
     	cellHeight = 20;
 
@@ -98,7 +98,7 @@ d3.tableView = (function(){
 
 	exports.columns = function(cols){
        if(!arguments.length) return columns;
-       columns = [...cols];
+       if (cols.length>0) columns = [...cols];
        return this;
 	};
 
