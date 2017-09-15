@@ -1,19 +1,26 @@
 <html>
 	<head>
-		<script src="d3/d3.min.js"></script>
-		<script src="src/tableView.js"></script>
+		<!-- <script src="d3/d3.min.js"></script> -->
+		<!-- <script src="js/simple-statistics.min.js"></script>
+		<script src="js/stat_common.js"></script> -->
+		<script src="src/cohortPanel.min.js"></script>
+		
+		
+		<!-- <script src="src/tableView.js"></script>
 		<script src="src/groupView.js"></script>
 		<script src="src/inputPanel.js"></script>
 		<script src="src/groupSelector.js"></script>
 		<script src="src/volcanoPlot.js"></script>
+		<script src="src/linePlot.js"></script>
+		<script src="src/barPlot.js"></script>
 		<script src="src/plotPanel.js"></script>
-		<script src="src/cohortPanel.js"></script>
+		<script src="src/cohortPanel.js"></script> -->
 		<!-- <script src="src/tableModule.js"></script> -->
 		<!-- * -->
 		<style type="text/css">
 		#tableCanvas {
 		    height: 100%;
-		    width: 80%;
+		    width: 100%;
 		    border:2px solid #000;
 		    overflow: scroll;
 		   
@@ -34,9 +41,22 @@
 	</body>
 	<script>
     var svg = d3.select('#UI');
-    var rows = [];
-	for(i=0;i<100;i++){rows.push(i)}
-    var	tableData=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
+    d3.json('test.txt',function(data){
+    	var dataset = data;
+
+    	var sampleColumns = dataset.samples.map((d)=>Object.keys(d))
+    					.reduce((acc,d)=>[...acc,...d],[]).filter((d,i,self)=>self.indexOf(d)===i)
+    	var cohortFn = cohortPanel
+    						.sampleData(dataset.samples)
+    						.mavenData(dataset.values)
+    						.tableColumns(sampleColumns)
+        svg.call(cohortFn);
+    })
+
+
+ //    var rows = [];
+	// for(i=0;i<100;i++){rows.push(i)}
+ //    var	tableData=rows.map((d)=>{ return {id:d,name:'sample'+d,value:Math.round(Math.random()*100)}})
 
 	 //    d3.json('test.txt',function(data){
 

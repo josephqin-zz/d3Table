@@ -1,4 +1,4 @@
-	d3.cohortPanel = (function(){
+	cohortPanel = (function(){
 		'use strict';
 		var cellWidth = 250,
 			cellHeight = 25;
@@ -11,16 +11,15 @@
 
 		var menus = [
 			{'name':'Cohort Selector','color':'#0B3C5D'},
-			{'name':'Volcano Plot','color':'#328CC1'},
-			{'name':'Group Info','color':'#D9B310'},
-			{'name':'Chromatogram Plot','color':'#1D2731'}
+			{'name':'Volcano Plot','color':'#328CC1'}
+			
 		]
 
 		var sampleData = new Array;
 		var mavenData = new Array;
 		var columnList = new Array;   	
 		function exports(_selection){
-            let dispatcher = d3.dispatch('CohortSelector','VolcanoPlot','GroupInfo','ChromatogramPlot');
+            let dispatcher = d3.dispatch('CohortSelector','VolcanoPlot');
 			let groupSelector = d3.groupSelector.groupData(groupData).tableData(sampleData).tableColumns(columnList)
             let plotPenal = d3.plotPanel.sampleData(sampleData).mavenData(mavenData).groupData(groupData)
             let menuBar = _selection.append('g').attr('id','menuBar')

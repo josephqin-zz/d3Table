@@ -25,7 +25,7 @@ d3.groupSelector = (function(){
 	    	    	
 	    	this.groupList = [...Object.keys(this.groupList),name]
 	    					.reduce((acc,group)=>{ 
-	    						acc[group]= typeof this.groupList[group] === 'undefined' ? {name:group,color:randomColor()}:this.groupList[group]; 
+	    						acc[group]= typeof this.groupList[group] === 'undefined' ? {name:group,color:randomColor(),selected:false}:this.groupList[group]; 
 	    						return acc;
 	    					},{})
 	    	this.relationship = [...Object.keys(this.relationship),name]
@@ -75,7 +75,7 @@ d3.groupSelector = (function(){
     	}else{
     		let ranges = getScale([...new Set([...this.selectedRow,rID])]);
     		
-    		for(i=ranges.min;i<=ranges.max;i++){rows.push(i)};
+    		for(let i=ranges.min;i<=ranges.max;i++){rows.push(i)};
     		
     	}
     	this.selectedRow = [...rows];
@@ -119,7 +119,7 @@ d3.groupSelector = (function(){
         var rmElmFn = function(value,i){dispatcher.call('rmElm',this,i)}
 
         var tableFn = d3.tableView.bindData(tabledata).columns(tableColumns).clickEvent(selectFn).rowFilter((d,i)=>groupdata.rowsViewID.includes(i));
-        var groupFn = d3.groupView.clickEvent(addElmFn).dblclickEvent(rmGroupFn)
+        var groupFn = d3.groupView.horizontalLayOut(false).clickEvent(addElmFn).dblclickEvent(rmGroupFn)
    	    inputPanel.call(d3.inputPanel.getInputFn(function(value){dispatcher.call('addGroup',this,value)})).attr('transform',d3.zoomIdentity.translate(5,5));	
 		    groupView.call(groupFn)
 		          .attr('transform',(d,i)=>'translate(0,'+(inputPanel.node().getBBox().height+5)+')');
@@ -169,14 +169,14 @@ d3.groupSelector = (function(){
                   if(rviewID>0) rs[rviewID]= rcolor; 
                   return rs;
                 },{})
-                return {...acc,...rmap}
+                return Object.assign(acc , rmap);
    	    	  },{})
    	    	  let selectedrow = groupdata.selectedRow.reduce((acc,r)=>{
               let rviewID = groupdata.rowsViewID.findIndex((d)=>d===r)+1;
               if(rviewID>0) acc[rviewID]='#e5d822';
               return acc;
             },{})
-            let colorMap = {...rowscolor,...selectedrow}
+            let colorMap = Object.assign( rowscolor , selectedrow);
             //get groupname by cursor coordinate
             let groups=Object.keys(groupdata.groupList)
 

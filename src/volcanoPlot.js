@@ -4,6 +4,7 @@ d3.volcanoPlot = (function(){
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
 	width = 800 - margin.left - margin.right,
 	height = 500 - margin.top - margin.bottom;
+	var clickEventFn = function(d,i){console.log('click')};
 	function exports(_selection){
 		_selection.selectAll('*').remove();
 		if(!plotData.length) return;
@@ -19,21 +20,24 @@ d3.volcanoPlot = (function(){
 		let Ymax = d3.max(plotData.map(function(d){return d.y}))
 		x.domain([Xmin,Xmax]).nice();
 		y.domain([Ymin,Ymax]).nice();
+		
 		vis.append("line")
 		.attr("x1",x(0))
-		.attr("y1",450)
+		.attr("y1",height)
 		.attr("x2",x(0))
 		.attr("y2",0)
 		.style('stroke','#000')
-		.style('stroke-width',2);
-
-		vis.append("line")
-		.attr("x1",0)
-		.attr("y1",y(2))
-		.attr("x2",800)
-		.attr("y2",y(2))
-		.style('stroke','#000')
-		.style('stroke-width',2);
+		.style('stroke-width',1);
+		if(Ymax>=2){
+			vis.append("line")
+				.attr("x1",0)
+				.attr("y1",y(2))
+				.attr("x2",width)
+				.attr("y2",y(2))
+				.style('stroke','#000')
+				.style('stroke-width',1);
+			}
+		
 		vis.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + height + ")")
@@ -67,9 +71,7 @@ d3.volcanoPlot = (function(){
 			.attr("cy",  y(d.y))
 			.style("fill", color(i))
 		})
-		.on("click",function(d){
-
-		})
+		.on("click",clickEventFn)
 		.on("mouseover", function(d) {		
 			d3.select(this).append('text')
 			.text(d.name)
@@ -81,15 +83,21 @@ d3.volcanoPlot = (function(){
 		})					
 		.on("mouseout", function(d) {		
 			d3.select(this).select('text').remove();							            				  
-		})								  	  
+		});								  	  
 
-	}
+	};
 
 	exports.bindData=function(data){
 		if(!arguments.length) return plotData;
 		plotData = data;
 		return this;
 	}
+
+	exports.clickEvent = function(fn){
+    	if(!arguments.length) return clickEventFn;
+    	clickEventFn=fn;
+    	return this;
+    }
 
 	return exports;
 })()

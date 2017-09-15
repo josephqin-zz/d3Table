@@ -5,7 +5,9 @@ d3.groupView=(function(){
 		       relationship:{}
    	    	};
    	var cellWidth = 200,
-  	  	cellHeight = 25;
+  	  	cellHeight = 25,
+  	  	horizontalLayOut = false;
+
 
   	function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
@@ -98,20 +100,26 @@ d3.groupView=(function(){
 		var cc = clickcancel();
 		cc.on('click',clickEventFn);
 		cc.on('dblclick',dblclickEventFn);
-		
+		let rowTransform = d3.zoomIdentity;
 		let group = _selection.selectAll('g')
 				  .data(d3.entries(groupData.relationship))
 				  .enter()
 				  .append('g')
 				  .attr('id',(g)=>g.key)
-				  .attr('transform',(d,i)=>'translate( 0,'+(cellHeight+5)*i+')')
+				  .attr('transform',(d,i)=>horizontalLayOut?rowTransform.translate((cellWidth+5)*i,0):rowTransform.translate(0,(cellHeight+5)*i))
+				  
 				  .each(function(g,i){
 				  	let rectColor = groupData.groupList[g.key].color;
 				  	let textColor = invertColor(rectColor,true);
-				  	d3.select(this).append('rect')
+				  	let rectBox = d3.select(this).append('rect')
 				    	   .attr("width", cellWidth)
 				           .attr("height", cellHeight)
-				           .attr("fill",rectColor);
+				           .style("fill",rectColor)
+				    if(horizontalLayOut){
+				    	rectBox.style('stroke-width',(d,i)=>groupData.groupList[d.key].selected?3:null)
+				  			   .style('stroke',(d,i)=>groupData.groupList[d.key].selected?'#000000':null);
+				    }       
+				           
 
 				    d3.select(this).append('text')
 				    			   .text(g.key+' has '+g.value.length.toString()+' samples')
@@ -128,7 +136,7 @@ d3.groupView=(function(){
     
     exports.bindData = function(data){
     	if(!arguments.length) return groupData;
-    	groupData = {...data};
+    	groupData = data;
     	return this;
     }
     exports.clickEvent = function(fn){
@@ -138,7 +146,12 @@ d3.groupView=(function(){
     }
     exports.dblclickEvent = function(fn){
         if(!arguments.length) return dblclickEventFn;
-        dblclickEventFn = fn
+        dblclickEventFn=fn
+        return this;
+    }
+    exports.horizontalLayOut = function(flag){
+    	if(!arguments.length) return horizontalLayOut;
+        horizontalLayOut = flag;
         return this;
     }
 	return exports;
