@@ -1,5 +1,5 @@
 //table windows View
-'use strict';
+// 'use strict';
 d3.tableView = (function(){
     //Default values:
     'use strict';

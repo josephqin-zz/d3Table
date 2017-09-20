@@ -1,4 +1,4 @@
-	cohortPanel = (function(){
+	d3.cohortPanel = (function(){
 		'use strict';
 		var cellWidth = 250,
 			cellHeight = 25;
