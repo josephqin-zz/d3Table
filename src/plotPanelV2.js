@@ -174,8 +174,8 @@ d3.plotPanel = (function(){
 		return this;
 	};
     exports.getdataURL = function(url){
-    	if(!arguments.length){return getdataURL;}
-		getdataURL = data;
+    	if(!arguments.length){return getDataURL;}
+		getDataURL = url;
 		return this;
     }
 

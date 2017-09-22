@@ -1,19 +1,19 @@
 <html>
 	<head>
-		<script src="d3/d3.min.js"></script>
+		<!-- <script src="d3/d3.min.js"></script>
 		<script src="js/simple-statistics.min.js"></script>
-		<script src="js/stat_common.js"></script>
-		<!-- <script src="src/cohortPanel.min.js"></script> -->
+		<script src="js/stat_common.js"></script> -->
+		<script src="src/cohortPanel.min.js"></script>
 		
 		
-		<script src="src/tableView.js"></script>
+		<!-- <script src="src/tableView.js"></script>
 		<script src="src/groupView.js"></script>
 		<script src="src/inputPanel.js"></script>
 		<script src="src/groupSelector.js"></script>
 		<script src="src/volcanoPlot.js"></script>
 		<script src="src/linePlot.js"></script>
 		<script src="src/barPlot.js"></script>
-		<script src="src/plotPanelV2.js"></script>
+		<script src="src/plotPanelV2.js"></script> -->
 		<!-- <script src="src/cohortPanel.js"></script> -->
 		<!-- <script src="src/tableModule.js"></script> -->
 		<!-- * -->
@@ -41,25 +41,25 @@
 	</body>
 	<script>
     var svg = d3.select('#UI');
-    var cohorts = [
-		{"cohort": "livers", "sample_id": "2981,2982,2983,2984"},
-		{"cohort": "spleens", "sample_id": "2993,2994,2995,2996"},
-		{"cohort": "guts", "sample_id": "2997,2998, 2985,2986"}
-		];
+  //   var cohorts = [
+		// {"cohort": "livers", "sample_id": "2981,2982,2983,2984"},
+		// {"cohort": "spleens", "sample_id": "2993,2994,2995,2996"},
+		// {"cohort": "guts", "sample_id": "2997,2998, 2985,2986"}
+		// ];
 
 
 
-    // d3.json('test.txt',function(data){
-    // 	var dataset = data;
+    d3.json('test.txt',function(data){
+    	var dataset = data;
 
-    // 	var sampleColumns = dataset.samples.map((d)=>Object.keys(d))
-    // 					.reduce((acc,d)=>[...acc,...d],[]).filter((d,i,self)=>self.indexOf(d)===i)
-    // 	var cohortFn = d3.cohortPanel
-    // 						.sampleData(dataset.samples)
-    // 						.mavenData(dataset.values)
-    // 						.tableColumns(sampleColumns)
-    //     svg.call(cohortFn);
-    // })
+    	var sampleColumns = dataset.samples.map((d)=>Object.keys(d))
+    					.reduce((acc,d)=>[...acc,...d],[]).filter((d,i,self)=>self.indexOf(d)===i)
+    	var cohortFn = cohortPanel
+    						.sampleData(dataset.samples)
+    						.mavenData(dataset.values)
+    						.tableColumns(sampleColumns)
+        svg.call(cohortFn);
+    })
 
 
  //    var rows = [];
