@@ -181,6 +181,12 @@ d3.plotPanel = (function(){
 
 	exports.groupData = function(data){
 		if(!arguments.length){return groupData;}
+		groupData ={
+		groupList:{},
+		selectedRow:[],
+		relationship:{},
+		rowsViewID:d3.range(0,25)
+		};
 		data.forEach((d,i)=>{
 			groupData.groupList[d.cohort]={name: d.cohort, color: randomColor(i), selected: false};
 			groupData.relationship[d.cohort]=d.sample_id.split(',').map((t)=>Number(t));
