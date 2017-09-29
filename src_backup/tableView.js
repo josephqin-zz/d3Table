@@ -50,13 +50,20 @@ d3.tableView = (function(){
     				   .append('g')
     				   .attr('id',(col,i)=>'col'+i)
     				   .each(function(col,i){
+                        
     				   	d3.select(this).attr('transform','translate('+cellWidth*i+', 0)')
     				   	d3.select(this).append('rect')
     				   				   .attr('width',cellWidth)
     				   				   .attr('height',cellHeight)
     				    d3.select(this).append('text')
     				    			   .text((d)=>d)
-    				    			   .style('fill',invertColor(rcolor,true))	
+    				    			   .style('fill',invertColor(rcolor,true))
+                                       //control text size to include everthing in cell
+                                       .style('font-size',(d)=>{
+                                        let text = d===null?'no value':d.toString() 
+                                        let textsize = Math.floor(cellWidth/text.length);
+                                        return textsize*2.2>16?16:textsize*2.2
+                                       })	
     				    			   .attr('x',cellWidth/2)
     				    			   .attr('y',cellHeight/2)
     				    			   .style('dominant-baseline','middle')

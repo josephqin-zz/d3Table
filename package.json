@@ -1,0 +1,22 @@
+{
+  "name": "cohort_module",
+  "version": "1.0.0",
+  "description": "Implement Table web moduel by D3js",
+  "main": "cohortmodule.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josephqin/d3Table.git"
+  },
+  "keywords": [
+    "d3"
+  ],
+  "author": "joseph@agios",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josephqin/d3Table/issues"
+  },
+  "homepage": "https://github.com/josephqin/d3Table#readme"
+}

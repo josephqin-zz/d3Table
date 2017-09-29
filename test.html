@@ -1,20 +1,20 @@
 <html>
 	<head>
-		<!-- <script src="d3/d3.min.js"></script>
+		<script src="d3/d3.min.js"></script>
 		<script src="js/simple-statistics.min.js"></script>
-		<script src="js/stat_common.js"></script> -->
-		<script src="src/cohortPanel.min.js"></script>
+		<script src="js/stat_common.js"></script>
+		<!-- <script src="src/cohortPanel.min.js"></script> -->
 		
 		
-		<!-- <script src="src/tableView.js"></script>
+		<script src="src/tableView.js"></script>
 		<script src="src/groupView.js"></script>
 		<script src="src/inputPanel.js"></script>
 		<script src="src/groupSelector.js"></script>
 		<script src="src/volcanoPlot.js"></script>
 		<script src="src/linePlot.js"></script>
 		<script src="src/barPlot.js"></script>
-		<script src="src/plotPanelV2.js"></script> -->
-		<!-- <script src="src/cohortPanel.js"></script> -->
+		<script src="src/plotPanel.js"></script>
+		<script src="src/cohortPanel.js"></script>
 		<!-- <script src="src/tableModule.js"></script> -->
 		<!-- * -->
 		<style type="text/css">
@@ -29,15 +29,15 @@
 		svg {
 		    display: block;
 		    width: 500%;
-		    height: 90%;
+		    height: 100%;
 		}
 		</style>
 	</head>
 	<body>
 	   
-		<!-- <div id='tableCanvas'> -->
+		<div id='tableCanvas'>
 		   <svg id="UI"></svg>
-	<!-- 	</div>	 -->
+		</div>	
 	</body>
 	<script>
     var svg = d3.select('#UI');
@@ -54,7 +54,7 @@
 
     	var sampleColumns = dataset.samples.map((d)=>Object.keys(d))
     					.reduce((acc,d)=>[...acc,...d],[]).filter((d,i,self)=>self.indexOf(d)===i)
-    	var cohortFn = cohortPanel
+    	var cohortFn = d3.cohortPanel
     						.sampleData(dataset.samples)
     						.mavenData(dataset.values)
     						.tableColumns(sampleColumns)
