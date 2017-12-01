@@ -12,7 +12,8 @@ d3.plotPanel = (function(){
 
     //private function calculate the cohor groups resulte on fly
 	function getVolcanoData(cohorGroups,groups){
-
+        // console.log(cohorGroups)
+        // console.log(groups)
 		return cohorGroups.map((g)=>{
 
 			let volc_item = {};	
